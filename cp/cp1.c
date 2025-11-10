@@ -132,7 +132,7 @@ int main()
             default:
                 printf("Неверный выбор операции!\n");
             }
-            break; // ДОБАВЛЕН break для case 3
+            break;
 
         case 4:
             printf("\nВыберите функцию:\n");
