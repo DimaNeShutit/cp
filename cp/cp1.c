@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_DEPRECATE
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <math.h>
 #include <locale.h>
@@ -16,9 +16,38 @@ int count_pos(TFun, double, double, double);
 int main()
 {
     setlocale(LC_ALL, "RUS");
-    int choice, func_choice, op_choice;
-    double x, start, end, step;
+    printf("\n");
+    printf(" __________________________________________________ \n");
+    printf("|                                                  |\n");
+    printf("|                 Курсовой проект                  |\n");
+    printf("|       Разработка программы анализа функций       |\n");
+    printf("|            Выполнил: Калашников Д.А.             |\n");
+    printf("|            Руководитель: Курипта О.В.            |\n");
+    printf("|                Группа: бИПТ-251                  |\n");;
+    printf("|                                                  |\n");
+    printf("|__________________________________________________| \n");
+    printf("\n");
+    int func_choice;
+    printf("\nВыберите функцию:\n");
+    printf("1 - Y(x) = (sin(x^2 + x^-1 + x^1/3) / (tg(e^(cos(x^1/2) * 10^-6)\n");
+    printf("2 - V(x) = 2 * (cos(x^2))^3 + (sin(x^3))^2 - 0.08 * Phi(x)\n");
+    printf("3 - Phi(x) = x^3 + 0.2 (x<1), x+x (x>=1)\n");
+    printf("Ваш выбор: ");
+    scanf("%d", &func_choice);
+
     TFun selected_func;
+    switch (func_choice) {
+    case 1: selected_func = Y; break;
+    case 2: selected_func = V; break;
+    case 3: selected_func = Phi; break;
+    default:
+        printf("Неверный выбор функции!\n");
+        return 1;
+    }
+
+    int choice, op_choice;
+    double x, start, end, step;
+
     while (1) {
         printf("\n=====================================\n");
         printf("               МЕНЮ\n");
@@ -35,76 +64,22 @@ int main()
 
         switch (choice) {
         case 1:
-            printf("\nВыберите функцию:\n");
-            printf("1 - Y(x) = (sin(x^2 + x^-1 + x^1/3) / (tg(e^(cos(x^1/2) * 10^-6)\n");
-            printf("2 - V(x) = 2 * (cos(x^2))^3 + (sin(x^3))^2 - 0.08 * Phi(x)\n");
-            printf("3 - Phi(x) = x^3 + 0.2 (x<1), x+x (x>=1)\n");
-            printf("Ваш выбор: ");
-            scanf("%d", &func_choice);
             printf("Введите x: ");
             scanf("%lf", &x);
-
-            switch (func_choice) {
-            case 1:
-                printf("S(%.3f) = %.8f\n", x, Y(x));
-                break;
-            case 2:
-                printf("V(%.3f) = %.8f\n", x, V(x));
-                break;
-            case 3:
-                printf("Y(%.3f) = %.8f\n", x, Phi(x));
-                break;
-            default:
-                printf("Неверный выбор функции!\n");
-            }
+            printf("f(%.3f) = %.8f\n", x, selected_func(x));
             break;
 
         case 2:
-            printf("\nВыберите функцию:\n");
-            printf("1 - Y(x) = (sin(x^2 + x^-1 + x^1/3) / (tg(e^(cos(x^1/2) * 10^-6)\n");
-            printf("2 - V(x) = 2 * (cos(x^2))^3 + (sin(x^3))^2 - 0.08 * Phi(x)\n");
-            printf("3 - Phi(x) = x^3 + 0.2 (x<1), x+x (x>=1)\n");
-            printf("Ваш выбор: ");
-            scanf("%d", &func_choice);
             printf("Введите начало интервала: ");
             scanf("%lf", &start);
             printf("Введите конец интервала: ");
             scanf("%lf", &end);
             printf("Введите шаг: ");
             scanf("%lf", &step);
-
-            switch (func_choice) {
-            case 1:
-                print_func(Y, start, end, step);
-                break;
-            case 2:
-                print_func(V, start, end, step);
-                break;
-            case 3:
-                print_func(Phi, start, end, step);
-                break;
-            default:
-                printf("Неверный выбор функции!\n");
-            }
+            print_func(selected_func, start, end, step);
             break;
 
         case 3:
-            printf("\nВыберите функцию:\n");
-            printf("1 - Y(x) = (sin(x^2 + x^-1 + x^1/3) / (tg(e^(cos(x^1/2) * 10^-6)\n");
-            printf("2 - V(x) = 2 * (cos(x^2))^3 + (sin(x^3))^2 - 0.08 * Phi(x)\n");
-            printf("3 - Phi(x) = x^3 + 0.2 (x<1), x+x (x>=1)\n");
-            printf("Ваш выбор: ");
-            scanf("%d", &func_choice);
-
-            switch (func_choice) {
-            case 1: selected_func = Y; break;
-            case 2: selected_func = V; break;
-            case 3: selected_func = Phi; break;
-            default:
-                printf("Неверный выбор функции!\n");
-                continue;
-            }
-
             printf("\nВыберите операцию:\n");
             printf("1 - Найти минимум\n");
             printf("2 - Найти максимум\n");
@@ -132,61 +107,25 @@ int main()
             default:
                 printf("Неверный выбор операции!\n");
             }
-            break; // ДОБАВЛЕН break для case 3
+            break;
 
         case 4:
-            printf("\nВыберите функцию:\n");
-            printf("1 - Y(x) = (sin(x^2 + x^-1 + x^1/3) / (tg(e^(cos(x^1/2) * 10^-6)\n");
-            printf("2 - V(x) = 2 * (cos(x^2))^3 + (sin(x^3))^2 - 0.08 * Phi(x)\n");
-            printf("3 - Phi(x) = x^3 + 0.2 (x<1), x+x (x>=1)\n");
-            printf("Ваш выбор: ");
-            scanf("%d", &func_choice);
             printf("Введите начало интервала: ");
             scanf("%lf", &start);
             printf("Введите конец интервала: ");
             scanf("%lf", &end);
             printf("Введите шаг: ");
             scanf("%lf", &step);
-
-            switch (func_choice) {
-            case 1:
-                print_graph(Y, start, end, step);
-                break;
-            case 2:
-                print_graph(V, start, end, step);
-                break;
-            case 3:
-                print_graph(Phi, start, end, step);
-                break;
-            default:
-                printf("Неверный выбор функции!\n");
-            }
+            print_graph(selected_func, start, end, step);
             break;
 
         case 5:
-            printf("\nВыберите функцию:\n");
-            printf("1 - Y(x) = (sin(x^2 + x^-1 + x^1/3) / (tg(e^(cos(x^1/2) * 10^-6)\n");
-            printf("2 - V(x) = 2 * (cos(x^2))^3 + (sin(x^3))^2 - 0.08 * Phi(x)\n");
-            printf("3 - Phi(x) = x^3 + 0.2 (x<1), x+x (x>=1)\n");
-            printf("Ваш выбор: ");
-            scanf("%d", &func_choice);
-
-            switch (func_choice) {
-            case 1: selected_func = Y; break;
-            case 2: selected_func = V; break;
-            case 3: selected_func = Phi; break;
-            default:
-                printf("Неверный выбор функции!\n");
-                continue;
-            }
-
             printf("Введите начало интервала: ");
             scanf("%lf", &start);
             printf("Введите конец интервала: ");
             scanf("%lf", &end);
             printf("Введите шаг: ");
             scanf("%lf", &step);
-
             int positive_count = count_pos(selected_func, start, end, step);
             printf("Количество положительных значений функции на интервале [%.2lf, %.2lf]: %d\n", start, end, positive_count);
             break;
@@ -203,7 +142,7 @@ int main()
 
 double Y(double x)
 {
-    return ((sin(x * x + 1 / x + pow(x, 1. / 3)) / tan(exp(cos(sqrt(x))))) * pow(10, -6));
+    return (sin(x * x + 1 / x + pow(x, 1. / 3)) / tan(exp(cos(sqrt(x))))) * pow(10, -6);
 }
 
 double V(double x)
@@ -259,40 +198,46 @@ double find_max(TFun func, double start, double end, double step)
 
 void print_graph(TFun func, double start, double end, double step)
 {
-    printf("\nГрафик функции:\n");
+    printf("\nГрафик функции на [%.2f, %.2f]:\n", start, end);
     printf("      y\n");
     printf("      |\n");
 
     const int width = 60;
     const int height = 20;
-    double max_val = func(start);
-    double min_val = func(start);
-    for (double x = start; x <= end; x += step) {
-        double val = func(x);
-        if (val > max_val) max_val = val;
-        if (val < min_val) min_val = val;
+    double max_val = -1e10;
+    double min_val = 1e10;
+
+    for (double x = start; x <= end; x += (end - start) / 100.0) {
+        double y = func(x);
+        if (y > max_val) max_val = y;
+        if (y < min_val) min_val = y;
+    }
+
+    if (func == Y && (max_val - min_val) < 1e-6) {
+        max_val = min_val + 1e-5;
+        if (max_val == min_val) max_val += 0.1;
     }
 
     double range = max_val - min_val;
-    if (range < 0.001) range = 1.0;
+    if (range < 1e-10) range = 1.0;
+
+    printf("Диапазон Y: [%.2e, %.2e]\n", min_val, max_val);
 
     for (int row = height; row >= 0; row--) {
-        if (row == height) {
-            printf("%5.1f |", max_val);
-        }
-        else if (row == 0) {
-            printf("%5.1f |", min_val);
+        double y_label = min_val + (range * row / height);
+        if (row == height || row == 0 || row == height / 2) {
+            printf("%8.1e |", y_label);
         }
         else {
-            printf("      |");
+            printf("         |");
         }
 
         for (int col = 0; col < width; col++) {
             double x = start + (end - start) * col / width;
             double y = func(x);
-            int point_row = (int)((y - min_val) * height / range);
 
-            if (point_row == row) {
+            int point_row = (int)((y - min_val) * height / range);
+            if (point_row >= 0 && point_row <= height && point_row == row) {
                 printf("*");
             }
             else {
@@ -302,12 +247,12 @@ void print_graph(TFun func, double start, double end, double step)
         printf("\n");
     }
 
-    printf("      +");
+    printf("         +");
     for (int i = 0; i < width; i++) printf("-");
     printf("> x\n");
 
-    printf("       %.1f", start);
-    for (int i = 0; i < width - 8; i++) printf(" ");
+    printf("         %.1f", start);
+    for (int i = 0; i < width - 12; i++) printf(" ");
     printf("%.1f\n", end);
 }
 
