@@ -1,9 +1,14 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
+#define SCREENW 80
+#define SCREENH 25
+
 #include <stdio.h>
 #include <math.h>
 #include <locale.h>
+#include <stdlib.h>
 
 typedef double (*TFun)(double);
+
 double Y(double);
 double V(double);
 double find_min(TFun, double, double, double);
@@ -35,21 +40,20 @@ int main()
     while (1) {
         printf("\n  Выберите функцию:\n");
         printf("\n");
-        printf("    1 - Монотонная функция Y(x)\n");
-        printf("    2 - Кусочная функция V(x)\n");
+        printf("    1 - Тригонометрическая функция Y(x)\n");
         printf("\n");
-        printf("    Монотонная функция\n");
         printf("            sin(x^2 + x^-1 + x^1/3)\n");
         printf("    Y(x) = ___________________________ * 10^-6\n");
         printf("               tg(e^cos(x^1/2))\n");
-        printf("\n");
-        printf("    Кусочная функция\n");
+        printf("\n\n");
+        printf("\n    2 - Кусочная функция V(x)\n\n");
         printf("             __\n");
         printf("            |\n");
         printf("            |   2 * cos^3(x^2) + sin^2(x^3) - 0.08 * (x^3 + 0.2), при x < 1\n");
         printf("    V(x) =  | \n");
-        printf("            |   2 * cos^3(x^2) + sin^2(x^3) - 0.08 * (x + x), при x >=1\n");
+        printf("            |   2 * cos^3(x^2) + sin^2(x^3) - 0.08 * (x + x), при x >= 1\n");
         printf("            |__\n");
+        printf("\n");
         printf("\n  Ваш выбор: ");
         scanf("%d", &func_choice);
 
@@ -71,9 +75,10 @@ int main()
         double x, start, end, step;
 
         while (1) {
+
             if (auto_next == 0) {
                 printf("\n    =====================================\n");
-                printf("                  МЕНЮ\n");
+                printf("                      МЕНЮ              \n");
                 printf("    =====================================\n");
                 printf("    1. Вычислить значение %s\n", func_name);
                 printf("    2. Табулировать %s\n", func_name);
@@ -93,21 +98,12 @@ int main()
             switch (choice) {
             case 0:
                 printf("    Возврат к выбору функции...\n");
-                break;
+                goto next_function;
 
             case 1:
                 printf("    Введите x для вычисления %s: ", func_name);
                 scanf("%lf", &x);
                 printf("%s(%.3f) = %.8f\n", func_name, x, selected_func(x));
-                {
-                    int suggest_result = oper_suggest(1);
-                    if (suggest_result == -1) {
-                        int user_choice;
-                        scanf("%d", &user_choice);
-                        if (user_choice == 1)
-                            auto_next = 2;
-                    }
-                }
                 break;
 
             case 2:
@@ -118,15 +114,6 @@ int main()
                 printf("    Введите шаг для табуляции %s: ", func_name);
                 scanf("%lf", &step);
                 print_func(selected_func, start, end, step);
-                {
-                    int suggest_result = oper_suggest(2);
-                    if (suggest_result == -1) {
-                        int user_choice;
-                        scanf("%d", &user_choice);
-                        if (user_choice == 1)
-                            auto_next = 4;
-                    }
-                }
                 break;
 
             case 3:
@@ -139,71 +126,59 @@ int main()
 
                 if (op_choice == 0) break;
 
-                printf("    Введите начало интервала для поиска экстремумов %s: ", func_name);
+                printf("    Введите начало интервала: ");
                 scanf("%lf", &start);
-                printf("    Введите конец интервала для поиска экстремумов %s: ", func_name);
+                printf("    Введите конец интервала: ");
                 scanf("%lf", &end);
-                printf("    Введите шаг (точность) для поиска экстремумов %s: ", func_name);
+                printf("    Введите шаг: ");
                 scanf("%lf", &step);
 
-                switch (op_choice) {
-                case 1: {
-                    double min_val = find_min(selected_func, start, end, step);
-                    printf("    Минимум функции %s: f(%.3f) = %.8f\n", func_name, min_val, selected_func(min_val));
-                    break;
+                if (op_choice == 1) {
+                    double min_x = find_min(selected_func, start, end, step);
+                    printf("    Минимум функции %s: f(%.3f) = %.8f\n", func_name, min_x, selected_func(min_x));
                 }
-                case 2: {
-                    double max_val = find_max(selected_func, start, end, step);
-                    printf("    Максимум функции %s: f(%.3f) = %.8f\n", func_name, max_val, selected_func(max_val));
-                    break;
-                }
-                default:
-                    printf("    Неверный выбор операции!\n");
+                else {
+                    double max_x = find_max(selected_func, start, end, step);
+                    printf("    Максимум функции %s: f(%.3f) = %.8f\n", func_name, max_x, selected_func(max_x));
                 }
                 break;
 
             case 4:
-                printf("    Введите начало интервала для построения графика %s: ", func_name);
+                printf("    Введите начало интервала: ");
                 scanf("%lf", &start);
-                printf("    Введите конец интервала для построения графика %s: ", func_name);
+                printf("    Введите конец интервала: ");
                 scanf("%lf", &end);
-                printf("    Введите шаг для построения графика %s: ", func_name);
+                printf("    Введите шаг: ");
                 scanf("%lf", &step);
                 print_graph(selected_func, start, end, step);
-                {
-                    int suggest_result = oper_suggest(4);
-                    if (suggest_result == -1) {
-                        int user_choice;
-                        scanf("%d", &user_choice);
-                        if (user_choice == 1)
-                            auto_next = 2;
-                    }
-                }
                 break;
 
             case 5:
-                printf("    Введите начало интервала для анализа положительных значений %s: ", func_name);
+                printf("    Введите начало интервала: ");
                 scanf("%lf", &start);
-                printf("    Введите конец интервала для анализа положительных значений %s: ", func_name);
+                printf("    Введите конец интервала: ");
                 scanf("%lf", &end);
-                printf("    Введите шаг для анализа положительных значений %s: ", func_name);
+                printf("    Введите шаг: ");
                 scanf("%lf", &step);
-                int positive_count = count_pos(selected_func, start, end, step);
-                printf("    Количество положительных значений функции %s на интервале [%.2lf, %.2lf]: %d\n", func_name, start, end, positive_count);
+                printf("    Количество положительных значений: %d\n",
+                    count_pos(selected_func, start, end, step));
                 break;
 
             default:
                 printf("    Неверный выбор меню!\n");
             }
-
-            if (choice == 0) break;
         }
+
+    next_function:;
     }
 }
 
 double Y(double x)
 {
-    return (sin(x * x + 1 / x + pow(x, 1. / 3)) / tan(exp(cos(sqrt(x))))) * 1e-6;
+    if (x <= 0) return NAN;
+
+    return (sin(x * x + 1.0 / x + pow(x, 1.0 / 3.0)) /
+        tan(exp(cos(sqrt(x))))) * 1e-6;
 }
 
 double V(double x)
@@ -218,22 +193,28 @@ double V(double x)
 }
 
 void print_func(TFun func, double start, double end, double step) {
-    printf("    x\t\tf(x)\n");
+    printf("    x\t\t  f(x)\n");
     printf("    ---------------------------------\n");
     for (double x = start; x <= end; x += step) {
-        printf("    %-12.8f | %-30.8f\n", x, func(x));
+        double val = func(x);
+
+        if (isnan(val) || isinf(val))
+            printf("    %-12.8f |   --- (нет значения)\n", x);
+        else
+            printf("    %-12.8f | %-30.8f\n", x, val);
     }
 }
 
 double find_min(TFun func, double start, double end, double step)
 {
-    double min_x = start;
-    double min_val = func(start);
+    double min_val = 1e100;
+    double min_x = NAN;
 
-    for (double x = start + step; x <= end; x += step) {
-        double current = func(x);
-        if (current < min_val) {
-            min_val = current;
+    for (double x = start; x <= end; x += step) {
+        double y = func(x);
+        if (isnan(y) || isinf(y)) continue;
+        if (y < min_val) {
+            min_val = y;
             min_x = x;
         }
     }
@@ -242,13 +223,14 @@ double find_min(TFun func, double start, double end, double step)
 
 double find_max(TFun func, double start, double end, double step)
 {
-    double max_x = start;
-    double max_val = func(start);
+    double max_val = -1e100;
+    double max_x = NAN;
 
-    for (double x = start + step; x <= end; x += step) {
-        double current = func(x);
-        if (current > max_val) {
-            max_val = current;
+    for (double x = start; x <= end; x += step) {
+        double y = func(x);
+        if (isnan(y) || isinf(y)) continue;
+        if (y > max_val) {
+            max_val = y;
             max_x = x;
         }
     }
@@ -257,85 +239,80 @@ double find_max(TFun func, double start, double end, double step)
 
 void print_graph(TFun func, double start, double end, double step)
 {
-    const int WIDTH = 80;
-    const int HEIGHT = 25;
+    char screen[SCREENW][SCREENH];
+    double y[SCREENW];
 
-    double min_y = 1e100, max_y = -1e100;
-    for (double x = start; x <= end; x += step)
+    double ymin = 1e100, ymax = -1e100;
+    double hx = (end - start) / (SCREENW - 1);
+    double x;
+
+    for (int i = 0; i < SCREENW; i++)
     {
-        double y = func(x);
-        if (isnan(y) || isinf(y)) continue;
-        if (y < min_y) min_y = y;
-        if (y > max_y) max_y = y;
+        x = start + i * hx;
+        y[i] = func(x);
+
+        if (!isnan(y[i]) && !isinf(y[i]))
+        {
+            if (y[i] < ymin) ymin = y[i];
+            if (y[i] > ymax) ymax = y[i];
+        }
     }
 
-    if (min_y > max_y)
+    if (ymin < 0) ymin = 0;
+
+    if (ymin > ymax)
     {
         printf("Функция не определена на интервале.\n");
         return;
     }
 
-    double dy = max_y - min_y;
-    double dx = end - start;
+    double hy = (ymax - ymin) / (SCREENH - 1);
 
-    int x_axis = -1;
-    if (min_y <= 0 && max_y >= 0)
-        x_axis = (int)((max_y / dy) * HEIGHT);
+    int x_axis = (int)((ymax - 0) / hy + 0.5);
+    if (x_axis < 0 || x_axis >= SCREENH) x_axis = -1;
 
     int y_axis = -1;
     if (start <= 0 && end >= 0)
-        y_axis = (int)((-start / dx) * WIDTH);
-
-    for (int row = 0; row <= HEIGHT; row++)
     {
-        double y_here = max_y - ((double)row / HEIGHT) * dy;
+        y_axis = (int)((0 - start) / hx + 0.5);
+        if (y_axis < 0 || y_axis >= SCREENW) y_axis = -1;
+    }
 
-        for (int col = 0; col <= WIDTH; col++)
+    for (int j = 0; j < SCREENH; j++)
+        for (int i = 0; i < SCREENW; i++)
         {
-            double x_here = start + ((double)col / WIDTH) * dx;
-            double y = func(x_here);
-
-            if (isnan(y) || isinf(y))
-            {
-                printf(" ");
-                continue;
-            }
-
-            if (fabs(y - y_here) <= dy / HEIGHT / 2.0)
-            {
-                printf("*");
-            }
-
-            else if (row == x_axis)
-            {
-                if (col == y_axis)
-                    printf("+");
-                else
-                    printf("-");
-            }
-
-            else if (col == y_axis)
-            {
-                printf("|");
-            }
-            else
-                printf(" ");
+            if (j == x_axis && i == y_axis) screen[i][j] = '+';
+            else if (j == x_axis) screen[i][j] = '-';
+            else if (i == y_axis) screen[i][j] = '|';
+            else screen[i][j] = ' ';
         }
 
-        printf("\n");
+    for (int i = 0; i < SCREENW; i++)
+    {
+        if (!isnan(y[i]) && !isinf(y[i]))
+        {
+            int j = (int)((ymax - y[i]) / hy + 0.5);
+            if (j >= 0 && j < SCREENH)
+                screen[i][j] = '*';
+        }
+    }
+
+    for (int j = 0; j < SCREENH; j++)
+    {
+        for (int i = 0; i < SCREENW; i++)
+            putchar(screen[i][j]);
+        putchar('\n');
     }
 }
 
 int count_pos(TFun func, double start, double end, double step)
 {
-    int count = 0;
+    int c = 0;
     for (double x = start; x <= end; x += step) {
         double y = func(x);
-        if (y > 0) {
-            count++;
-        }
+        if (!isnan(y) && y > 0) c++;
     }
-    return count;
+    return c;
 }
 
 int oper_suggest(int choice)
@@ -346,8 +323,7 @@ int oper_suggest(int choice)
         printf("    Перейти к построению графика? (1 - да, 0 - нет): ");
     else if (choice == 4)
         printf("    Перейти к табуляции? (1 - да, 0 - нет): ");
-    else
-        return 0;
+    else return 0;
 
     return -1;
 }
