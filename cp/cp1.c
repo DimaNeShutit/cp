@@ -13,7 +13,7 @@ double Y(double);
 double V(double);
 double find_min(TFun, double, double, double);
 double find_max(TFun, double, double, double);
-void print_func(TFun, double, double, double);
+void print_table(TFun, double, double, double);
 void print_graph(TFun, double, double, double);
 int count_pos(TFun, double, double, double);
 int oper_suggest(int choice);
@@ -113,7 +113,7 @@ int main()
                 scanf("%lf", &end);
                 printf("    Введите шаг для табуляции %s: ", func_name);
                 scanf("%lf", &step);
-                print_func(selected_func, start, end, step);
+                print_table(selected_func, start, end, step);
                 break;
 
             case 3:
@@ -177,8 +177,7 @@ double Y(double x)
 {
     if (x <= 0) return NAN;
 
-    return (sin(x * x + 1.0 / x + pow(x, 1.0 / 3.0)) /
-        tan(exp(cos(sqrt(x))))) * 1e-6;
+    return (sin(x * x + 1.0 / x + pow(x, 1.0 / 3.0)) / tan(exp(cos(sqrt(x))))) * 1e-6;
 }
 
 double V(double x)
@@ -192,7 +191,7 @@ double V(double x)
     return 2 * pow(cos(x * x), 3) + pow(sin(x * x * x), 2) - 0.08 * phi;
 }
 
-void print_func(TFun func, double start, double end, double step) {
+void print_table(TFun func, double start, double end, double step) {
     printf("    x\t\t  f(x)\n");
     printf("    ---------------------------------\n");
     for (double x = start; x <= end; x += step) {
