@@ -16,7 +16,6 @@ double find_max(TFun, double, double, double);
 void print_table(TFun, double, double, double);
 void print_graph(TFun, double, double, double);
 int count_pos(TFun, double, double, double);
-int oper_suggest(int choice);
 
 int main()
 {
@@ -165,6 +164,7 @@ int main()
                     count_pos(selected_func, start, end, step));
                 break;
             case 6:
+                printf("    Завершение работы программы...");
                 return 0;
             default:
                 printf("    Неверный выбор меню!\n");
@@ -317,12 +317,7 @@ void print_graph(TFun func, double start, double end, double step)
             int j = (int)((ymax - y[i]) / hy + 0.5);
             if (j >= 0 && j < SCREENH)
             {
-                if (x_axis != -1 && j == x_axis)
-                    screen[i][j] = '*';
-                else if (y_axis != -1 && i == y_axis)
-                    screen[i][j] = '*';
-                else
-                    screen[i][j] = '*';
+                screen[i][j] = '*';
             }
         }
     }
@@ -343,17 +338,4 @@ int count_pos(TFun func, double start, double end, double step)
         if (!isnan(y) && y > 0) c++;
     }
     return c;
-}
-
-int oper_suggest(int choice)
-{
-    if (choice == 1)
-        printf("    Перейти к табуляции? (1 - да, 0 - нет): ");
-    else if (choice == 2)
-        printf("    Перейти к построению графика? (1 - да, 0 - нет): ");
-    else if (choice == 4)
-        printf("    Перейти к табуляции? (1 - да, 0 - нет): ");
-    else return 0;
-
-    return -1;
 }
