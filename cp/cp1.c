@@ -85,6 +85,7 @@ int main()
                 printf("    3. Определить минимум/максимум %s\n", func_name);
                 printf("    4. Построить график %s\n", func_name);
                 printf("    5. Посчитать количество положительных значений %s\n", func_name);
+                printf("    6. Выход из программы\n");
                 printf("    0. Вернуться к выбору функции\n");
                 printf("    =====================================\n");
                 printf("    Ваш выбор: ");
@@ -163,7 +164,8 @@ int main()
                 printf("    Количество положительных значений: %d\n",
                     count_pos(selected_func, start, end, step));
                 break;
-
+            case 6:
+                return 0;
             default:
                 printf("    Неверный выбор меню!\n");
             }
@@ -241,13 +243,11 @@ void print_graph(TFun func, double start, double end, double step)
     char screen[SCREENW][SCREENH];
     double y[SCREENW];
 
-    double ymin = 1e100, ymax = -1e100;
+    double ymin = INFINITY, ymax = -INFINITY;
     double hx = (end - start) / (SCREENW - 1);
-    double x;
-
     for (int i = 0; i < SCREENW; i++)
     {
-        x = start + i * hx;
+        double x = start + i * hx;
         y[i] = func(x);
 
         if (!isnan(y[i]) && !isinf(y[i]))
@@ -257,21 +257,37 @@ void print_graph(TFun func, double start, double end, double step)
         }
     }
 
-    if (ymin < 0) ymin = 0;
-
-    if (ymin > ymax)
+    if (ymin == INFINITY || ymax == -INFINITY)
     {
         printf("Функция не определена на интервале.\n");
         return;
     }
 
-    double hy = (ymax - ymin) / (SCREENH - 1);
-
-    int x_axis = (int)((ymax - 0) / hy + 0.5);
-    if (x_axis < 0 || x_axis >= SCREENH) x_axis = -1;
-
+    double yrange = ymax - ymin;
+    if (yrange < 1e-10)
+    {
+        ymin -= 1.0;
+        ymax += 1.0;
+        yrange = ymax - ymin;
+    }
+    else
+    {
+        double margin = yrange * 0.1;
+        ymin -= margin;
+        ymax += margin;
+        yrange = ymax - ymin;
+    }
+    double hy = yrange / (SCREENH - 1);
+    int x_axis = -1;
     int y_axis = -1;
-    if (start <= 0 && end >= 0)
+
+    if (ymin <= 0 && 0 <= ymax)
+    {
+        x_axis = (int)((ymax - 0) / hy + 0.5);
+        if (x_axis < 0 || x_axis >= SCREENH) x_axis = -1;
+    }
+
+    if (start <= 0 && 0 <= end)
     {
         y_axis = (int)((0 - start) / hx + 0.5);
         if (y_axis < 0 || y_axis >= SCREENW) y_axis = -1;
@@ -279,12 +295,20 @@ void print_graph(TFun func, double start, double end, double step)
 
     for (int j = 0; j < SCREENH; j++)
         for (int i = 0; i < SCREENW; i++)
+            screen[i][j] = ' ';
+
+    for (int j = 0; j < SCREENH; j++)
+    {
+        for (int i = 0; i < SCREENW; i++)
         {
-            if (j == x_axis && i == y_axis) screen[i][j] = '+';
-            else if (j == x_axis) screen[i][j] = '-';
-            else if (i == y_axis) screen[i][j] = '|';
-            else screen[i][j] = ' ';
+            if (x_axis != -1 && y_axis != -1 && j == x_axis && i == y_axis)
+                screen[i][j] = '+';
+            else if (x_axis != -1 && j == x_axis)
+                screen[i][j] = '-';
+            else if (y_axis != -1 && i == y_axis)
+                screen[i][j] = '|';
         }
+    }
 
     for (int i = 0; i < SCREENW; i++)
     {
@@ -292,7 +316,14 @@ void print_graph(TFun func, double start, double end, double step)
         {
             int j = (int)((ymax - y[i]) / hy + 0.5);
             if (j >= 0 && j < SCREENH)
-                screen[i][j] = '*';
+            {
+                if (x_axis != -1 && j == x_axis)
+                    screen[i][j] = '*';
+                else if (y_axis != -1 && i == y_axis)
+                    screen[i][j] = '*';
+                else
+                    screen[i][j] = '*';
+            }
         }
     }
 
